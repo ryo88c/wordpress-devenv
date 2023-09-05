@@ -1,6 +1,8 @@
 FROM php:${PHP_VERSION:-8.2}-${SERVER:-apache}
 
 WORKDIR /var/www/html
+COPY ./docker/ap/pam.d/chsh /etc/pam.d/chsh
+RUN chsh -s /usr/bin/bash www-data
 
 # Install extensions.
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/

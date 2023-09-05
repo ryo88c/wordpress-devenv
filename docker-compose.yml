@@ -23,7 +23,7 @@ services:
       WP_EMAIL: ${WP_EMAIL:-user@localhost}
       WP_LOCALE: ${WP_LOCALE:-ja}
     volumes:
-      - php:/var/www/html
+      - ap:/var/www/html
 
   db:
     container_name: ${PROJECT_NAME:-example}-db
@@ -47,5 +47,7 @@ services:
       - 3000:80
 
 volumes:
+  ap:
+    name: ${PROJECT_NAME:-example}-ap
   db:
-  php:
+    name: ${PROJECT_NAME:-example}-db
