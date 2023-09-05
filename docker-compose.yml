@@ -1,0 +1,51 @@
+version: '3.9'
+services:
+  ap:
+    container_name: ${PROJECT_NAME:-example}-ap
+    build:
+      context: .
+      dockerfile: ./docker/ap/Dockerfile
+    depends_on:
+      - db
+    ports:
+      - ${HTTP_PORT:-8080}:80
+      - ${HTTPS_PORT:-8443}:443
+    environment:
+      TIMEZONE: ${TIMEZONE:-Asia/Tokyo}
+      HTTP_POST: ${HTTP_PORT:-8080}
+      HTTPS_PORT: ${HTTPS_PORT:-8443}
+      PROJECT_NAME: ${PROJECT_NAME:-example}
+      DB_DATABASE: ${DB_DATABASE:-wordpress}
+      DB_USERNAME: ${DB_USERNAME:-user}
+      DB_PASSWORD: ${DB_PASSWORD:-pass}
+      WP_USERNAME: ${WP_USERNAME:-user}
+      WP_PASSWORD: ${WP_PASSWORD:-pass}
+      WP_EMAIL: ${WP_EMAIL:-user@localhost}
+      WP_LOCALE: ${WP_LOCALE:-ja}
+    volumes:
+      - php:/var/www/html
+
+  db:
+    container_name: ${PROJECT_NAME:-example}-db
+    image: mysql:${MYSQL_VERSION:-5.7}
+    platform: linux/x86_64
+    ports:
+      - ${DB_PORT:-3306}:3306
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-wordpress}
+      MYSQL_USER: ${DB_USERNAME:-user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-pass}
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      TZ: ${TIMEZONE:-Asia/Tokyo}
+    volumes:
+      - db:/var/lib/mysql
+
+  smtp:
+    container_name: ${PROJECT_NAME:-example}-smtp
+    image: rnwood/smtp4dev
+    ports:
+      - 3000:80
+
+volumes:
+  db:
+  php:
